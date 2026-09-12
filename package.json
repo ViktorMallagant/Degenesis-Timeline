@@ -1,0 +1,22 @@
+{
+  "name": "degenesis-timeline",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "3.3.4",
+    "vuetify": "3.3.20"
+  },
+  "devDependencies": {
+    "@types/node": "18.18.4",
+    "@vitejs/plugin-vue": "4.3.4",
+    "typescript": "5.2.2",
+    "vite": "4.4.9",
+    "vue-tsc": "1.8.11"
+  }
+}
