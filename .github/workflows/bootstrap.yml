@@ -1,0 +1,230 @@
+name: Bootstrap standalone timeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Copy timeline and create standalone app
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p src/components src/config
+
+          curl -fsSL https://raw.githubusercontent.com/ViktorMallagant/Degenesis-Alpha/main/src/components/TimelineTab.vue -o src/components/TimelineTab.vue
+          curl -fsSL https://raw.githubusercontent.com/ViktorMallagant/Degenesis-Alpha/main/src/config/timeline.ts -o src/config/timeline.ts
+          curl -fsSL https://raw.githubusercontent.com/ViktorMallagant/Degenesis-Alpha/main/src/config/timelineBookText.ts -o src/config/timelineBookText.ts
+
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/components/TimelineTab.vue')
+          text = path.read_text(encoding='utf-8')
+          marker = "\n<style>\n/* Timeline is the final main-navigation entry."
+          if marker in text:
+              text = text.split(marker, 1)[0].rstrip() + "\n"
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          cat > src/App.vue <<'EOF'
+          <template>
+            <v-app>
+              <TimelineTab />
+            </v-app>
+          </template>
+
+          <script setup lang="ts">
+          import TimelineTab from './components/TimelineTab.vue'
+          </script>
+          EOF
+
+          cat > src/main.ts <<'EOF'
+          import { createApp } from 'vue'
+          import { createVuetify } from 'vuetify'
+          import * as components from 'vuetify/components'
+          import * as directives from 'vuetify/directives'
+          import 'vuetify/styles'
+          import './styles.css'
+          import App from './App.vue'
+
+          const vuetify = createVuetify({
+            components,
+            directives,
+            theme: {
+              defaultTheme: 'dark',
+              themes: {
+                dark: {
+                  dark: true,
+                  colors: {
+                    background: '#0f0f0f',
+                    surface: '#1a1a1a',
+                    primary: '#B71C1C',
+                    secondary: '#D32F2F',
+                    info: '#78909C'
+                  }
+                }
+              }
+            }
+          })
+
+          createApp(App).use(vuetify).mount('#app')
+          EOF
+
+          cat > src/styles.css <<'EOF'
+          html,
+          body,
+          #app {
+            min-height: 100%;
+            margin: 0;
+            background: #0f0f0f;
+          }
+
+          body {
+            min-width: 320px;
+          }
+          EOF
+
+          cat > src/env.d.ts <<'EOF'
+          /// <reference types="vite/client" />
+          EOF
+
+          cat > index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <meta name="theme-color" content="#0f0f0f" />
+              <title>Degenesis Timeline</title>
+            </head>
+            <body>
+              <div id="app"></div>
+              <script type="module" src="/src/main.ts"></script>
+            </body>
+          </html>
+          EOF
+
+          cat > package.json <<'EOF'
+          {
+            "name": "degenesis-timeline",
+            "version": "1.0.0",
+            "private": true,
+            "type": "module",
+            "scripts": {
+              "dev": "vite",
+              "build": "vue-tsc --noEmit && vite build",
+              "preview": "vite preview"
+            },
+            "dependencies": {
+              "vue": "3.3.4",
+              "vuetify": "3.3.20"
+            },
+            "devDependencies": {
+              "@types/node": "18.18.4",
+              "@vitejs/plugin-vue": "4.3.4",
+              "typescript": "5.2.2",
+              "vite": "4.4.9",
+              "vue-tsc": "1.8.11"
+            }
+          }
+          EOF
+
+          cat > tsconfig.json <<'EOF'
+          {
+            "compilerOptions": {
+              "target": "ES2020",
+              "useDefineForClassFields": true,
+              "module": "ESNext",
+              "lib": ["ES2020", "DOM", "DOM.Iterable"],
+              "allowJs": false,
+              "skipLibCheck": true,
+              "esModuleInterop": true,
+              "allowSyntheticDefaultImports": true,
+              "strict": true,
+              "forceConsistentCasingInFileNames": true,
+              "moduleResolution": "Node",
+              "resolveJsonModule": true,
+              "isolatedModules": true,
+              "noEmit": true,
+              "jsx": "preserve",
+              "baseUrl": ".",
+              "paths": {
+                "@/*": ["src/*"]
+              },
+              "types": ["vite/client", "node"]
+            },
+            "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"]
+          }
+          EOF
+
+          cat > vite.config.ts <<'EOF'
+          import { defineConfig } from 'vite'
+          import vue from '@vitejs/plugin-vue'
+          import { fileURLToPath, URL } from 'node:url'
+
+          export default defineConfig({
+            base: '/Degenesis-Timeline/',
+            plugins: [vue()],
+            resolve: {
+              alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
+              }
+            }
+          })
+          EOF
+
+          cat > .gitignore <<'EOF'
+          node_modules/
+          dist/
+          .DS_Store
+          *.local
+          EOF
+
+          cat > README.md <<'EOF'
+          # Degenesis Timeline
+
+          A standalone interactive chronology for **Degenesis**, separated from the Degenesis-Alpha character application.
+
+          The application opens directly to the timeline and contains the General Canon and Spitalian Archives tracks from *Primal Punk*.
+
+          ## Development
+
+          ```bash
+          npm install
+          npm run dev
+          ```
+
+          ## Build
+
+          ```bash
+          npm run build
+          ```
+          EOF
+
+      - name: Install dependencies and verify build
+        run: |
+          npm install
+          npm run build
+
+      - name: Commit standalone application
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Create standalone Degenesis timeline"
+          git push
