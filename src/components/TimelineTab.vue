@@ -115,7 +115,7 @@
             <div class="timeline-column-head">
               <span>YEAR</span>
               <strong>CHRONOLOGY</strong>
-              <small>Distance represents elapsed time · Select a marker for details</small>
+              <small>Distance represents elapsed time<br />Select a marker for details</small>
             </div>
 
             <div class="timeline-vertical-canvas" :style="canvasStyle">
@@ -371,7 +371,7 @@ const markerOffset = (event: TimelineEvent) => {
 
 const markerStyle = (event: TimelineEvent) => ({
   top: `${yearPosition(event.year)}px`,
-  left: `calc(50% + ${markerOffset(event)}px)`
+  left: `calc(50% + var(--axis-shift) + ${markerOffset(event)}px)`
 })
 
 const markerClasses = (event: TimelineEvent) => ({
@@ -636,6 +636,7 @@ watch(
 }
 
 .timeline-vertical-canvas {
+  --axis-shift: 36px;
   position: relative;
   width: 100%;
   min-height: 1000px;
@@ -647,7 +648,7 @@ watch(
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: calc(50% + var(--axis-shift));
   z-index: 2;
   width: 2px;
   transform: translateX(-1px);
@@ -1003,6 +1004,7 @@ watch(
   }
 
   .timeline-vertical-canvas {
+    --axis-shift: 31px;
     background:
       linear-gradient(90deg, rgba(255,255,255,0.018) 0 62px, transparent 62px);
   }
