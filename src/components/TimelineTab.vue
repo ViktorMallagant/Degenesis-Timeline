@@ -604,7 +604,7 @@ watch(
   grid-template-columns: 52px 1fr;
   grid-template-rows: auto auto;
   min-height: 58px;
-  padding: 10px 18px 9px 0;
+  padding: 10px 0 9px;
   background: #151515;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px 8px 0 0;
