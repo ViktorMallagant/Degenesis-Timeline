@@ -15,107 +15,115 @@
         </div>
       </div>
 
+      <v-card class="timeline-controls" variant="tonal">
+        <v-card-text>
+          <div class="filter-heading">
+            <div class="control-copy">
+              <strong>Filter the archive</strong>
+              <span>Leave a filter empty to include all values in that category.</span>
+            </div>
+            <v-btn
+              v-if="hasActiveFilters"
+              size="small"
+              variant="text"
+              class="clear-filter-button"
+              @click="clearFilters"
+            >
+              Clear filters
+            </v-btn>
+          </div>
+
+          <div class="filter-grid">
+            <v-text-field
+              v-model="searchQuery"
+              label="Search events"
+              placeholder="Search titles, descriptions, Cults, regions..."
+              variant="outlined"
+              density="compact"
+              clearable
+              hide-details
+            />
+
+            <v-select
+              v-model="selectedArchives"
+              :items="archiveOptions"
+              label="Archive"
+              variant="outlined"
+              density="compact"
+              multiple
+              chips
+              closable-chips
+              clearable
+              hide-details
+            />
+
+            <v-select
+              v-model="selectedSources"
+              :items="sourceOptions"
+              label="Source"
+              variant="outlined"
+              density="compact"
+              multiple
+              chips
+              closable-chips
+              clearable
+              hide-details
+            />
+
+            <v-select
+              v-model="selectedCults"
+              :items="cultOptions"
+              label="Cult"
+              variant="outlined"
+              density="compact"
+              multiple
+              chips
+              closable-chips
+              clearable
+              hide-details
+            />
+
+            <v-select
+              v-model="selectedRegions"
+              :items="regionOptions"
+              label="Region"
+              variant="outlined"
+              density="compact"
+              multiple
+              chips
+              closable-chips
+              clearable
+              hide-details
+            />
+          </div>
+        </v-card-text>
+      </v-card>
+
+      <div class="source-key">
+        <span class="source-key-item general-key">
+          <i></i> Canon
+        </span>
+        <span class="source-key-item spitalian-key">
+          <i></i> Spitalian Archives
+        </span>
+        <span class="source-key-note">Source: KatharSys</span>
+      </div>
+
+      <div class="scroll-hint">
+        All events share one chronological axis · Distance represents elapsed time · Select a marker for details
+      </div>
+
       <div class="timeline-workspace">
         <div class="timeline-left">
-          <v-card class="timeline-controls" variant="tonal">
-            <v-card-text>
-              <div class="control-copy">
-                <strong>Timeline sources</strong>
-                <span>Both canon tracks are enabled by default.</span>
-              </div>
-              <div class="source-toggles">
-                <v-switch
-                  v-model="generalEnabled"
-                  label="General Canon"
-                  color="red-darken-2"
-                  density="compact"
-                  hide-details
-                  inset
-                  :disabled="generalEnabled && !spitalianEnabled"
-                />
-                <v-switch
-                  v-model="spitalianEnabled"
-                  label="Spitalian Archives"
-                  color="blue-grey-lighten-1"
-                  density="compact"
-                  hide-details
-                  inset
-                  :disabled="spitalianEnabled && !generalEnabled"
-                />
-              </div>
-            </v-card-text>
-          </v-card>
-
-          <div class="source-key">
-            <span v-if="generalEnabled" class="source-key-item general-key">
-              <i></i> General Canon · Primal Punk pp. 340–352
-            </span>
-            <span v-if="spitalianEnabled" class="source-key-item spitalian-key">
-              <i></i> Spitalian Archives · Primal Punk pp. 333–337
-            </span>
-          </div>
-
-          <div class="scroll-hint">
-            Distance represents elapsed time · Scroll down to move through history · Select a marker for details
-          </div>
-
           <div class="timeline-frame">
-            <div class="timeline-column-head" :class="columnClass">
-              <div class="axis-label">YEAR</div>
-              <div v-if="generalEnabled" class="lane-label general-label">
-                <strong>GENERAL</strong>
-                <small>CANON</small>
-              </div>
-              <div v-if="spitalianEnabled" class="lane-label spitalian-label">
-                <strong>SPITALIAN</strong>
-                <small>ARCHIVES</small>
-              </div>
+            <div class="timeline-column-head">
+              <span>YEAR</span>
+              <strong>UNIFIED CHRONOLOGY</strong>
+              <small>Canon and archive records are color-coded on the same axis</small>
             </div>
 
-            <div ref="timelineScroller" class="timeline-vertical-canvas" :class="columnClass" :style="canvasStyle">
-              <div class="year-column"></div>
-
-              <div v-if="generalEnabled" class="event-lane general-lane">
-                <div class="lane-centerline"></div>
-                <button
-                  v-for="event in generalTimelineEvents"
-                  :id="`timeline-${event.id}`"
-                  :key="event.id"
-                  type="button"
-                  class="event-marker general-marker"
-                  :class="{ selected: selectedEvent?.id === event.id }"
-                  :style="positionStyle(event.year)"
-                  :aria-label="`${event.year}: ${event.title}`"
-                  @click="selectEvent(event)"
-                >
-                  <span class="marker-dot"></span>
-                  <span class="marker-label">
-                    <strong>{{ event.year }}</strong>
-                    <span>{{ event.title }}</span>
-                  </span>
-                </button>
-              </div>
-
-              <div v-if="spitalianEnabled" class="event-lane spitalian-lane">
-                <div class="lane-centerline"></div>
-                <button
-                  v-for="event in spitalianTimelineEvents"
-                  :id="`timeline-${event.id}`"
-                  :key="event.id"
-                  type="button"
-                  class="event-marker spitalian-marker"
-                  :class="{ selected: selectedEvent?.id === event.id }"
-                  :style="positionStyle(event.year)"
-                  :aria-label="`${event.year}: ${event.title}`"
-                  @click="selectEvent(event)"
-                >
-                  <span class="marker-dot"></span>
-                  <span class="marker-label">
-                    <strong>{{ event.year }}</strong>
-                    <span>{{ event.title }}</span>
-                  </span>
-                </button>
-              </div>
+            <div class="timeline-vertical-canvas" :style="canvasStyle">
+              <div class="axis-centerline"></div>
 
               <div
                 v-for="year in axisYears"
@@ -126,11 +134,34 @@
               >
                 <span>{{ year }}</span>
               </div>
+
+              <button
+                v-for="event in visibleEvents"
+                :id="`timeline-${event.id}`"
+                :key="event.id"
+                type="button"
+                class="event-marker"
+                :class="markerClasses(event)"
+                :style="markerStyle(event)"
+                :aria-label="`${event.year}: ${event.title}`"
+                @click="selectEvent(event)"
+              >
+                <span class="marker-dot"></span>
+                <span class="marker-label">
+                  <strong>{{ event.year }} · {{ timelineSourceInfo[event.source].label }}</strong>
+                  <span>{{ event.title }}</span>
+                </span>
+              </button>
+
+              <div v-if="visibleEvents.length === 0" class="no-results">
+                <strong>No events match these filters.</strong>
+                <span>Try removing a filter or using a broader keyword.</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <v-card v-if="selectedEvent" class="event-detail" variant="elevated">
+        <v-card v-if="selectedEvent && selectedIndex >= 0" class="event-detail" variant="elevated">
           <v-card-actions class="detail-actions">
             <v-btn variant="text" :disabled="selectedIndex <= 0" @click="moveSelection(-1)">
               Previous event
@@ -147,21 +178,40 @@
           <v-divider />
           <v-card-text>
             <div class="detail-topline">
-              <span
-                class="detail-source"
-                :class="selectedEvent.source === 'general' ? 'general-source' : 'spitalian-source'"
-              >
-                {{ timelineSourceInfo[selectedEvent.source].label }}
-              </span>
+              <div class="detail-badges">
+                <span
+                  class="detail-source"
+                  :class="selectedEvent.source === 'general' ? 'general-source' : 'spitalian-source'"
+                >
+                  {{ timelineSourceInfo[selectedEvent.source].label }}
+                </span>
+                <span class="detail-book">KatharSys</span>
+              </div>
               <span class="detail-pages">{{ timelineSourceInfo[selectedEvent.source].pages }}</span>
             </div>
+
             <div class="detail-heading">
               <span class="detail-year">{{ selectedEvent.year }}</span>
               <div class="detail-copy">
                 <h2>{{ selectedEvent.title }}</h2>
+                <div v-if="eventCults(selectedEvent).length || eventRegions(selectedEvent).length" class="detail-tags">
+                  <span v-for="cult in eventCults(selectedEvent)" :key="`cult-${cult}`" class="meta-tag">
+                    {{ cult }}
+                  </span>
+                  <span v-for="region in eventRegions(selectedEvent)" :key="`region-${region}`" class="meta-tag region-tag">
+                    {{ region }}
+                  </span>
+                </div>
                 <p>{{ eventText(selectedEvent) }}</p>
               </div>
             </div>
+          </v-card-text>
+        </v-card>
+
+        <v-card v-else class="event-detail empty-detail" variant="elevated">
+          <v-card-text>
+            <strong>No event selected</strong>
+            <p>Adjust the filters to restore matching events.</p>
           </v-card-text>
         </v-card>
       </div>
@@ -172,8 +222,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import {
-  generalTimelineEvents,
-  spitalianTimelineEvents,
   timelineEvents,
   timelineSourceInfo,
   type TimelineEvent,
@@ -181,13 +229,69 @@ import {
 } from '@/config/timeline'
 import { timelineBookText } from '@/config/timelineBookText'
 
-const generalEnabled = ref(true)
-const spitalianEnabled = ref(true)
-const timelineScroller = ref<HTMLElement | null>(null)
-
-const PIXELS_PER_YEAR = 10
-const TIMELINE_PADDING = 64
+const PIXELS_PER_YEAR = 14
+const TIMELINE_PADDING = 84
 const AXIS_STEP = 25
+const SOURCE_NAME = 'KatharSys'
+
+const archiveOptions = [
+  { title: 'Canon', value: 'general' },
+  { title: 'Spitalian Archives', value: 'spitalian' }
+]
+
+const cultRules: Array<{ name: string; terms: RegExp }> = [
+  { name: 'Anabaptists', terms: /\banabapt|\brebus\b/i },
+  { name: 'Anubians', terms: /\banubian/i },
+  { name: 'Apocalyptics', terms: /\bapocalyptic/i },
+  { name: 'Chroniclers', terms: /\bchronicler|\bstreamer/i },
+  { name: 'Clanners', terms: /\bclanner|\bclans?\b|\bvoivode/i },
+  { name: 'Hellvetics', terms: /\bhellvetic/i },
+  { name: 'Jehammedans', terms: /\bjehammed/i },
+  { name: 'Judges', terms: /\bjudges?\b|\bprotectorate\b|\bprotectors?\b/i },
+  { name: 'Neolibyans', terms: /\bneolibyan|\bthe libyan\b/i },
+  { name: 'Palers', terms: /\bpalers?\b/i },
+  { name: 'Scourgers', terms: /\bscourger/i },
+  { name: 'Scrappers', terms: /\bscrapper/i },
+  { name: 'Spitalians', terms: /\bspitalian|\bspital\b|\bpreservist|\bfamulancer/i }
+]
+
+const regionRules: Array<{ name: string; terms: RegExp }> = [
+  { name: 'Borca', terms: /\bborca\b|\bjustitian\b|\bexalt\b|\bliqua\b|\bcologne\b|\bdortmund\b|\bruhr\b|\bmenden\b/i },
+  { name: 'Franka', terms: /\bfranka\b|\bparis\b|\bsouffrance\b/i },
+  { name: 'Pollen', terms: /\bpollen\b|\bdanzig\b|\blodz\b|\bbreslau\b|\bpoland\b/i },
+  { name: 'Balkhan', terms: /\bbalkhan|\blaibach\b|\bpraha\b/i },
+  { name: 'Purgare', terms: /\bpurgare\b|\bpurgan|\badriatic\b|\bsyracuse\b/i },
+  { name: 'Hybrispania', terms: /\bhybrispania\b|\bspain\b|\bspanish\b|\bgibraltar\b|\bandalusia\b/i },
+  { name: 'Africa', terms: /\bafrica|\blibya\b|\balgeria\b|\bagadez\b|\bnairobi\b|côte d.?ivoire|\babidjan\b|\bcongo\b|\blake victoria\b|\bnile\b|\bmasai\b|\bngorongoro\b|\bqabis\b|\btripol\b/i },
+  { name: 'Briton', terms: /\bbritain\b|\bbriton\b/i },
+  { name: 'Global', terms: /\bworldwide\b|\bglobal\b|\bearth\b|\bunited nations\b|\btranshuman era\b|\bstream\b/i }
+]
+
+const searchQuery = ref('')
+const selectedArchives = ref<TimelineSource[]>([])
+const selectedSources = ref<string[]>([])
+const selectedCults = ref<string[]>([])
+const selectedRegions = ref<string[]>([])
+
+const eventText = (event: TimelineEvent) => timelineBookText[event.id] ?? event.summary
+const eventCorpus = (event: TimelineEvent) =>
+  [event.title, event.summary, eventText(event), timelineSourceInfo[event.source].label, SOURCE_NAME]
+    .join(' ')
+    .toLowerCase()
+
+const eventCults = (event: TimelineEvent) => {
+  const corpus = eventCorpus(event)
+  return cultRules.filter((rule) => rule.terms.test(corpus)).map((rule) => rule.name)
+}
+
+const eventRegions = (event: TimelineEvent) => {
+  const corpus = eventCorpus(event)
+  return regionRules.filter((rule) => rule.terms.test(corpus)).map((rule) => rule.name)
+}
+
+const cultOptions = cultRules.map((rule) => rule.name)
+const regionOptions = regionRules.map((rule) => rule.name)
+const sourceOptions = [SOURCE_NAME]
 
 const minimumEventYear = Math.min(...timelineEvents.map((event) => event.year))
 const maximumEventYear = Math.max(...timelineEvents.map((event) => event.year))
@@ -211,31 +315,76 @@ const canvasStyle = computed(() => ({
   height: `${timelineHeight}px`
 }))
 
-const activeSources = computed<TimelineSource[]>(() => {
-  const sources: TimelineSource[] = []
-  if (generalEnabled.value) sources.push('general')
-  if (spitalianEnabled.value) sources.push('spitalian')
-  return sources
+const visibleEvents = computed(() => {
+  const terms = searchQuery.value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+
+  return timelineEvents
+    .filter((event) => {
+      if (selectedArchives.value.length && !selectedArchives.value.includes(event.source)) return false
+      if (selectedSources.value.length && !selectedSources.value.includes(SOURCE_NAME)) return false
+
+      const cults = eventCults(event)
+      if (selectedCults.value.length && !selectedCults.value.some((cult) => cults.includes(cult))) return false
+
+      const regions = eventRegions(event)
+      if (selectedRegions.value.length && !selectedRegions.value.some((region) => regions.includes(region))) return false
+
+      if (terms.length) {
+        const corpus = [
+          eventCorpus(event),
+          ...cults,
+          ...regions
+        ].join(' ').toLowerCase()
+        if (!terms.every((term) => corpus.includes(term))) return false
+      }
+
+      return true
+    })
+    .sort((a, b) => a.year - b.year || a.source.localeCompare(b.source))
 })
 
-const columnClass = computed(() => ({
-  'single-lane': activeSources.value.length === 1
-}))
-
-const visibleEvents = computed(() =>
-  timelineEvents
-    .filter((event) => activeSources.value.includes(event.source))
-    .sort((a, b) => a.year - b.year || a.source.localeCompare(b.source))
-)
-
-const selectedEvent = ref<TimelineEvent>(generalTimelineEvents[0])
+const selectedEvent = ref<TimelineEvent | undefined>(timelineEvents[0])
 
 const selectedIndex = computed(() => {
   if (!selectedEvent.value) return -1
-  return visibleEvents.value.findIndex((event) => event.id === selectedEvent.value.id)
+  return visibleEvents.value.findIndex((event) => event.id === selectedEvent.value?.id)
 })
 
-const eventText = (event: TimelineEvent) => timelineBookText[event.id] ?? event.summary
+const hasActiveFilters = computed(() =>
+  Boolean(
+    searchQuery.value.trim() ||
+    selectedArchives.value.length ||
+    selectedSources.value.length ||
+    selectedCults.value.length ||
+    selectedRegions.value.length
+  )
+)
+
+const sameYearEvents = (event: TimelineEvent) =>
+  visibleEvents.value.filter((candidate) => candidate.year === event.year)
+
+const markerOffset = (event: TimelineEvent) => {
+  const siblings = sameYearEvents(event)
+  const index = siblings.findIndex((candidate) => candidate.id === event.id)
+  if (siblings.length <= 1 || index < 0) return 0
+  return (index - (siblings.length - 1) / 2) * 22
+}
+
+const markerStyle = (event: TimelineEvent) => ({
+  top: `${yearPosition(event.year)}px`,
+  left: `calc(50% + ${markerOffset(event)}px)`
+})
+
+const markerClasses = (event: TimelineEvent) => ({
+  'general-marker': event.source === 'general',
+  'spitalian-marker': event.source === 'spitalian',
+  selected: selectedEvent.value?.id === event.id,
+  'label-left': markerOffset(event) <= 0 && sameYearEvents(event).length > 1
+})
 
 const selectEvent = (event: TimelineEvent) => {
   selectedEvent.value = event
@@ -243,7 +392,7 @@ const selectEvent = (event: TimelineEvent) => {
 
 const scrollSelectedIntoView = async () => {
   await nextTick()
-  if (!selectedEvent.value || !timelineScroller.value) return
+  if (!selectedEvent.value) return
 
   const marker = document.getElementById(`timeline-${selectedEvent.value.id}`)
   marker?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
@@ -257,12 +406,28 @@ const moveSelection = (direction: number) => {
   void scrollSelectedIntoView()
 }
 
-watch(activeSources, () => {
-  if (!selectedEvent.value || !activeSources.value.includes(selectedEvent.value.source)) {
-    selectedEvent.value = visibleEvents.value[0]
-    void scrollSelectedIntoView()
-  }
-})
+const clearFilters = () => {
+  searchQuery.value = ''
+  selectedArchives.value = []
+  selectedSources.value = []
+  selectedCults.value = []
+  selectedRegions.value = []
+}
+
+watch(
+  visibleEvents,
+  (events) => {
+    if (!events.length) {
+      selectedEvent.value = undefined
+      return
+    }
+
+    if (!selectedEvent.value || !events.some((event) => event.id === selectedEvent.value?.id)) {
+      selectedEvent.value = events[0]
+    }
+  },
+  { flush: 'post' }
+)
 </script>
 
 <style scoped>
@@ -335,25 +500,22 @@ watch(activeSources, () => {
   letter-spacing: 0.16em;
 }
 
-.timeline-workspace {
-  display: grid;
-  grid-template-columns: minmax(390px, 520px) minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(18px, 2.5vw, 34px);
-}
-
-.timeline-left {
-  min-width: 0;
-}
-
 .timeline-controls {
+  margin-bottom: 12px;
   background: rgba(255, 255, 255, 0.045) !important;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  margin-bottom: 12px;
 }
 
 .timeline-controls :deep(.v-card-text) {
-  padding: 16px 18px 10px;
+  padding: 18px;
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
 }
 
 .control-copy strong,
@@ -362,29 +524,36 @@ watch(activeSources, () => {
 }
 
 .control-copy span {
+  margin-top: 3px;
   color: #9e9e9e;
   font-size: 0.82rem;
-  margin-top: 3px;
 }
 
-.source-toggles {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0 18px;
-  margin-top: 8px;
+.clear-filter-button {
+  flex: 0 0 auto;
 }
 
-.source-toggles :deep(.v-switch) {
-  min-width: 190px;
+.filter-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.35fr) repeat(4, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.filter-grid :deep(.v-field) {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.filter-grid :deep(.v-chip) {
+  max-width: 100%;
 }
 
 .source-key {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
+  align-items: center;
+  gap: 7px 18px;
   min-height: 28px;
-  margin: 0 2px 10px;
+  margin: 0 2px 8px;
   color: #a8a8a8;
   font-size: 0.72rem;
 }
@@ -409,11 +578,25 @@ watch(activeSources, () => {
   background: #90a4ae;
 }
 
+.source-key-note {
+  color: #777;
+}
+
 .scroll-hint {
-  padding: 0 2px 8px;
+  padding: 0 2px 10px;
   color: #747474;
   font-size: 0.7rem;
-  text-align: left;
+}
+
+.timeline-workspace {
+  display: grid;
+  grid-template-columns: minmax(390px, 560px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(18px, 2.5vw, 34px);
+}
+
+.timeline-left {
+  min-width: 0;
 }
 
 .timeline-frame {
@@ -424,93 +607,61 @@ watch(activeSources, () => {
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.24);
 }
 
-.timeline-column-head,
-.timeline-vertical-canvas {
-  display: grid;
-  grid-template-columns: 80px repeat(2, minmax(0, 1fr));
-}
-
-.timeline-column-head.single-lane,
-.timeline-vertical-canvas.single-lane {
-  grid-template-columns: 80px minmax(0, 1fr);
-}
-
 .timeline-column-head {
   position: sticky;
   top: 0;
   z-index: 8;
-  min-height: 56px;
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  grid-template-rows: auto auto;
+  min-height: 58px;
+  padding: 10px 18px 9px 0;
   background: #151515;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px 8px 0 0;
+  box-shadow: inset 0 3px linear-gradient(90deg, #c93838, #90a4ae);
 }
 
-.axis-label,
-.lane-label {
+.timeline-column-head > span {
+  grid-row: 1 / 3;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-  padding: 0 10px;
-}
-
-.axis-label {
+  align-items: center;
+  padding-left: 12px;
   color: #8b8b8b;
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.lane-label {
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+.timeline-column-head strong {
+  font-size: 0.76rem;
+  letter-spacing: 0.11em;
 }
 
-.lane-label strong {
-  font-size: 0.74rem;
-  letter-spacing: 0.1em;
-}
-
-.lane-label small {
+.timeline-column-head small {
   margin-top: 3px;
-  color: #757575;
-  font-size: 0.59rem;
-  letter-spacing: 0.1em;
-}
-
-.general-label {
-  box-shadow: inset 0 3px #a92d30;
-}
-
-.spitalian-label {
-  box-shadow: inset 0 3px #78909c;
+  color: #777;
+  font-size: 0.63rem;
 }
 
 .timeline-vertical-canvas {
   position: relative;
   width: 100%;
   min-height: 1000px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.018) 0 72px, transparent 72px);
 }
 
-.year-column {
-  grid-column: 1;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.event-lane {
-  position: relative;
-  min-width: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.045);
-}
-
-.lane-centerline {
+.axis-centerline {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.17);
+  z-index: 2;
+  width: 2px;
+  transform: translateX(-1px);
+  background: linear-gradient(180deg, #c93838 0%, #777 48%, #90a4ae 100%);
+  opacity: 0.72;
 }
 
 .year-tick {
@@ -524,18 +675,17 @@ watch(activeSources, () => {
 }
 
 .year-tick.major {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.095);
 }
 
 .year-tick span {
   position: absolute;
-  left: 9px;
+  left: 10px;
   top: 0;
   transform: translateY(-50%);
   color: #9b9b9b;
-  font-size: 0.98rem;
+  font-size: 0.93rem;
   font-weight: 500;
-  line-height: 1;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -546,10 +696,9 @@ watch(activeSources, () => {
 
 .event-marker {
   position: absolute;
-  left: 50%;
   z-index: 3;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -563,11 +712,11 @@ watch(activeSources, () => {
   position: absolute;
   top: 7px;
   left: 7px;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border: 2px solid #151515;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
@@ -582,17 +731,17 @@ watch(activeSources, () => {
 .event-marker:hover .marker-dot,
 .event-marker:focus-visible .marker-dot,
 .event-marker.selected .marker-dot {
-  transform: scale(1.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.46);
+  transform: scale(1.55);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.52);
 }
 
 .marker-label {
   position: absolute;
-  left: calc(100% + 7px);
+  left: calc(100% + 10px);
   top: 50%;
   display: none;
-  width: 168px;
-  padding: 7px 9px;
+  width: 190px;
+  padding: 8px 10px;
   transform: translateY(-50%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 4px;
@@ -602,15 +751,15 @@ watch(activeSources, () => {
   pointer-events: none;
 }
 
-.event-marker:nth-of-type(even) .marker-label {
+.event-marker.label-left .marker-label {
   left: auto;
-  right: calc(100% + 7px);
+  right: calc(100% + 10px);
 }
 
 .event-marker:hover,
 .event-marker:focus-visible,
 .event-marker.selected {
-  z-index: 6;
+  z-index: 7;
 }
 
 .event-marker:hover .marker-label,
@@ -625,16 +774,43 @@ watch(activeSources, () => {
 
 .marker-label strong {
   color: #ababab;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
 }
 
 .marker-label span {
-  margin-top: 2px;
-  font-size: 0.75rem;
+  margin-top: 3px;
+  font-size: 0.76rem;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.3;
+}
+
+.no-results {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  width: min(320px, calc(100% - 120px));
+  transform: translateX(-50%);
+  padding: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  color: #9e9e9e;
+  text-align: center;
+}
+
+.no-results strong,
+.no-results span {
+  display: block;
+}
+
+.no-results strong {
+  color: #d5d5d5;
+}
+
+.no-results span {
+  margin-top: 5px;
+  font-size: 0.8rem;
 }
 
 .event-detail {
@@ -658,7 +834,14 @@ watch(activeSources, () => {
   margin-bottom: 24px;
 }
 
-.detail-source {
+.detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-source,
+.detail-book {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
@@ -680,6 +863,12 @@ watch(activeSources, () => {
   background: rgba(120, 144, 156, 0.18);
   color: #cfd8dc;
   border: 1px solid rgba(120, 144, 156, 0.4);
+}
+
+.detail-book {
+  color: #bdbdbd;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .detail-pages {
@@ -715,6 +904,27 @@ watch(activeSources, () => {
   font-weight: 400;
 }
 
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+}
+
+.meta-tag {
+  padding: 3px 7px;
+  border: 1px solid rgba(201, 56, 56, 0.3);
+  border-radius: 999px;
+  color: #cfcfcf;
+  background: rgba(201, 56, 56, 0.08);
+  font-size: 0.66rem;
+}
+
+.region-tag {
+  border-color: rgba(144, 164, 174, 0.32);
+  background: rgba(144, 164, 174, 0.08);
+}
+
 .detail-heading p {
   max-width: 1100px;
   margin: 0;
@@ -746,6 +956,21 @@ watch(activeSources, () => {
   font-variant-numeric: tabular-nums;
 }
 
+.empty-detail strong {
+  color: #d6d6d6;
+}
+
+.empty-detail p {
+  margin: 8px 0 0;
+  color: #8e8e8e;
+}
+
+@media (max-width: 1350px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, minmax(190px, 1fr));
+  }
+}
+
 @media (max-width: 1000px) {
   .timeline-workspace {
     grid-template-columns: 1fr;
@@ -774,46 +999,21 @@ watch(activeSources, () => {
     display: none;
   }
 
-  .source-toggles {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+  .filter-heading {
+    align-items: flex-start;
   }
 
-  .source-toggles :deep(.v-switch) {
-    min-width: 0;
+  .filter-grid {
+    grid-template-columns: 1fr;
   }
 
-  .timeline-column-head,
+  .timeline-column-head {
+    grid-template-columns: 62px 1fr;
+  }
+
   .timeline-vertical-canvas {
-    grid-template-columns: 70px repeat(2, minmax(0, 1fr));
-  }
-
-  .timeline-column-head.single-lane,
-  .timeline-vertical-canvas.single-lane {
-    grid-template-columns: 70px minmax(0, 1fr);
-  }
-
-  .axis-label,
-  .lane-label {
-    padding: 0 7px;
-  }
-
-  .lane-label strong {
-    font-size: 0.63rem;
-  }
-
-  .lane-label small {
-    font-size: 0.52rem;
-  }
-
-  .year-tick span {
-    left: 6px;
-    font-size: 0.98rem;
-  }
-
-  .marker-label {
-    width: 136px;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.018) 0 62px, transparent 62px);
   }
 
   .detail-heading {
@@ -821,7 +1021,7 @@ watch(activeSources, () => {
   }
 
   .detail-year {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
   }
 
   .detail-actions {
@@ -830,6 +1030,10 @@ watch(activeSources, () => {
 
   .detail-actions span {
     display: none;
+  }
+
+  .marker-label {
+    width: 160px;
   }
 }
 </style>
