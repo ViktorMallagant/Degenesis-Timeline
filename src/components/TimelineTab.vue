@@ -109,17 +109,13 @@
         <span class="source-key-note">Source: KatharSys</span>
       </div>
 
-      <div class="scroll-hint">
-        All events share one chronological axis · Distance represents elapsed time · Select a marker for details
-      </div>
-
       <div class="timeline-workspace">
         <div class="timeline-left">
           <div class="timeline-frame">
             <div class="timeline-column-head">
               <span>YEAR</span>
-              <strong>UNIFIED CHRONOLOGY</strong>
-              <small>Canon and archive records are color-coded on the same axis</small>
+              <strong>CHRONOLOGY</strong>
+              <small>Distance represents elapsed time · Select a marker for details</small>
             </div>
 
             <div class="timeline-vertical-canvas" :style="canvasStyle">
@@ -257,13 +253,12 @@ const cultRules: Array<{ name: string; terms: RegExp }> = [
 
 const regionRules: Array<{ name: string; terms: RegExp }> = [
   { name: 'Borca', terms: /\bborca\b|\bjustitian\b|\bexalt\b|\bliqua\b|\bcologne\b|\bdortmund\b|\bruhr\b|\bmenden\b/i },
-  { name: 'Franka', terms: /\bfranka\b|\bparis\b|\bsouffrance\b/i },
+  { name: 'Franka', terms: /\bfranka\b|\bparis\b|\bsouffrance\b|\bbritain\b|\bbriton\b/i },
   { name: 'Pollen', terms: /\bpollen\b|\bdanzig\b|\blodz\b|\bbreslau\b|\bpoland\b/i },
   { name: 'Balkhan', terms: /\bbalkhan|\blaibach\b|\bpraha\b/i },
   { name: 'Purgare', terms: /\bpurgare\b|\bpurgan|\badriatic\b|\bsyracuse\b/i },
   { name: 'Hybrispania', terms: /\bhybrispania\b|\bspain\b|\bspanish\b|\bgibraltar\b|\bandalusia\b/i },
   { name: 'Africa', terms: /\bafrica|\blibya\b|\balgeria\b|\bagadez\b|\bnairobi\b|côte d.?ivoire|\babidjan\b|\bcongo\b|\blake victoria\b|\bnile\b|\bmasai\b|\bngorongoro\b|\bqabis\b|\btripol\b/i },
-  { name: 'Briton', terms: /\bbritain\b|\bbriton\b/i },
   { name: 'Global', terms: /\bworldwide\b|\bglobal\b|\bearth\b|\bunited nations\b|\btranshuman era\b|\bstream\b/i }
 ]
 
@@ -582,15 +577,9 @@ watch(
   color: #777;
 }
 
-.scroll-hint {
-  padding: 0 2px 10px;
-  color: #747474;
-  font-size: 0.7rem;
-}
-
 .timeline-workspace {
   display: grid;
-  grid-template-columns: minmax(390px, 560px) minmax(0, 1fr);
+  grid-template-columns: minmax(195px, 280px) minmax(0, 1fr);
   align-items: start;
   gap: clamp(18px, 2.5vw, 34px);
 }
@@ -636,12 +625,14 @@ watch(
 .timeline-column-head strong {
   font-size: 0.76rem;
   letter-spacing: 0.11em;
+  text-align: center;
 }
 
 .timeline-column-head small {
   margin-top: 3px;
   color: #777;
   font-size: 0.63rem;
+  text-align: center;
 }
 
 .timeline-vertical-canvas {
