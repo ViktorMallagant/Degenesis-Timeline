@@ -619,7 +619,7 @@ watch(
   background: #151515;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px 8px 0 0;
-  box-shadow: inset 0 3px linear-gradient(90deg, #c93838, #90a4ae);
+  border-top: 3px solid rgba(201, 56, 56, 0.82);
 }
 
 .timeline-column-head > span {
