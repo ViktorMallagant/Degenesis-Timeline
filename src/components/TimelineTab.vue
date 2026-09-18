@@ -1018,6 +1018,12 @@ watch(
 
   .timeline-left {
     grid-row: 2;
+    max-height: 68vh;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+    border-radius: 8px;
   }
 
   .detail-heading {
