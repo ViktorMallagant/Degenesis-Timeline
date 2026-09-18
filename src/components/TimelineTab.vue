@@ -579,7 +579,7 @@ watch(
 
 .timeline-workspace {
   display: grid;
-  grid-template-columns: minmax(195px, 280px) minmax(0, 1fr);
+  grid-template-columns: minmax(295px, 380px) minmax(0, 1fr);
   align-items: start;
   gap: clamp(18px, 2.5vw, 34px);
 }
