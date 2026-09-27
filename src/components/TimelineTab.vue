@@ -4,7 +4,7 @@
       <div class="timeline-header">
         <div>
           <div class="timeline-kicker">HISTORY ARCHIVE</div>
-          <h1>Degenesis Timeline</h1>
+          <h1>Degenesis: Alpha - Timeline</h1>
           <p>
             <strong>Note:</strong> Very few people are aware of the history prior to, during, and even after the Eshaton, especially in regards to Recombination Group, Project Tannhäuser and Sleepers. It is best to assume ignorance and ask your Gamemaster if your character knows a particular piece of information.
           </p>
